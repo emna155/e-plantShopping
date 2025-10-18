@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { addItem } from "./CartSlice";
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 
 function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
@@ -10,7 +10,7 @@ function ProductList({ onHomeClick }) {
   const [addedToCart, setAddedToCart] = useState({});
   const dispatch = useDispatch();
 
-  const handleAddToCart = (product) => {
+  const cartItems = useSelector((state) => state.cart.items);  const handleAddToCart = (product) => {
     dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
   
     setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
@@ -18,7 +18,9 @@ function ProductList({ onHomeClick }) {
       [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
     }));
   };
-
+  const calculateTotalQuantity = () => {
+    return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+  };
   const plantsArray = [
     {
       category: "Air Purifying Plants",
@@ -350,6 +352,20 @@ function ProductList({ onHomeClick }) {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                <span
+    style={{
+      position: "absolute",
+      top: "0",
+      right: "0",
+      color: "white",
+      borderRadius: "50%",
+      padding: "7px 45px ",
+      paddingTop:"40px",
+      fontSize: "16px",
+    }}
+  >
+    {calculateTotalQuantity()}</span>
+
               </h1>
             </a>
           </div>
